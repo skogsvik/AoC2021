@@ -30,3 +30,9 @@ where
 {
     file_to(filename).collect()
 }
+
+pub fn file_to_lines(filename: impl AsRef<Path>) -> impl Iterator<Item = String> {
+    buf_open(filename)
+        .lines()
+        .map(|line| line.expect("Couldn't read line"))
+}
