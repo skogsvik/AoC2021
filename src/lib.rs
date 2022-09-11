@@ -13,3 +13,4 @@ pub mod aoc8;
 pub mod aoc9;
 pub mod aoc10;
 pub mod aoc11;
+pub mod aoc12;
