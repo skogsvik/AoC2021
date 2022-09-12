@@ -1,23 +1,22 @@
 use crate::loaders::file_to_lines;
 use itertools::Itertools;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 pub const DATA: &str = "input/aoc12";
 
 pub type Cave = u32;
-const START: u32 = 0;
-const END: u32 = 1;
-type CaveList = Vec<Cave>;
-type CaveMap = HashMap<Cave, CaveList>;
+const START: Cave = 0;
+const END: Cave = 1;
+type CaveMap = HashMap<Cave, Vec<Cave>>;
 
 /// Encodes a &str representation of a cave to a 32 bit number according to:
 /// "start" => START (0)
 /// "end" => END (1)
-/// u32 of u8 representations packed next to eachother. e.g. `"a"` would be 97, and `"aa"` 24929
+/// u32 of u8 representations packed next to eachother. e.g. `"a"` would be 97, and `"aa"` 97*(1 + 2**8) = 24929
 fn str_to_cave(s: &str) -> Cave {
     match s {
         "start" => START,
         "end" => END,
-        _ => s.bytes().fold(0, |val, bit| val << 8 | bit as u32), // This might as well be << 7 since ASCII fits in 7 bits
+        _ => s.bytes().fold(0, |val, bit| val << 8 | bit as Cave), // This might as well be << 7 since ASCII fits in 7 bits
     }
 }
 
@@ -26,7 +25,7 @@ fn is_small_cave(&cave: &Cave) -> bool {
     We assume all caves are either start, end, or 2 letters. This allows to check the case with a
     simple comparison, making start and end considered large caves (the non-special case)
     */
-    const SMALL_CAVE_AA: u32 = 24929; // str_to_cave("aa")
+    const SMALL_CAVE_AA: Cave = 24929; // str_to_cave("aa")
     cave >= SMALL_CAVE_AA
 }
 
@@ -46,41 +45,42 @@ fn lines_to_cave_map(lines: impl Iterator<Item = String>) -> CaveMap {
 
 fn traverse(
     current_cave: Cave,
-    mut path: CaveList,
+    mut path: HashSet<Cave>,
     map: &CaveMap,
-    has_used_double_visit: bool,
-) -> Vec<CaveList> {
-    path.push(current_cave);
-    if current_cave == END {
-        return vec![path];
-    }
+    may_visit_small_cave_twice: bool,
+) -> usize {
+    path.insert(current_cave);
     map[&current_cave]
         .iter()
         .filter_map(|cave_candidate| {
             if is_small_cave(cave_candidate) {
                 if !path.contains(cave_candidate) {
-                    Some((cave_candidate, has_used_double_visit))
-                } else if !has_used_double_visit {
-                    Some((cave_candidate, true))
+                    Some((cave_candidate, may_visit_small_cave_twice)) // New small cave
+                } else if may_visit_small_cave_twice {
+                    Some((cave_candidate, false)) // First re-visited small cave
                 } else {
-                    None
+                    None // Additionally re-visited small cave
                 }
             } else {
-                Some((cave_candidate, has_used_double_visit))
+                Some((cave_candidate, may_visit_small_cave_twice)) // Big cave
             }
         })
-        .flat_map(|(&next, has_used_double_visit)| {
-            traverse(next, path.clone(), map, has_used_double_visit)
+        .map(|(&next_cave, may_visit_small_cave_twice)| {
+            if next_cave == END {
+                1
+            } else {
+                traverse(next_cave, path.clone(), map, may_visit_small_cave_twice)
+            }
         })
-        .collect()
+        .sum()
 }
 
 pub fn answer1(input: CaveMap) -> usize {
-    traverse(START, vec![], &input, true).len()
+    traverse(START, HashSet::with_capacity(input.len()), &input, false)
 }
 
 pub fn answer2(input: CaveMap) -> usize {
-    traverse(START, vec![], &input, false).len()
+    traverse(START, HashSet::with_capacity(input.len()), &input, true)
 }
 
 #[cfg(test)]
