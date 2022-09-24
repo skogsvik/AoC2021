@@ -101,6 +101,7 @@ mod tests {
     fn test_answer2_mock_data() {
         assert_eq!(answer2(str_lines_to_string(MOCK_DATA)), 230)
     }
+
     #[test]
     fn test_answer1() {
         assert_eq!(answer1(load(DATA)), 4174964)

@@ -97,6 +97,7 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc |        fgae cfgab f
     fn test_answer2_mock_data() {
         assert_eq!(answer2(str_lines_to_string(MOCK_DATA)), 61229)
     }
+
     #[test]
     fn test_answer1() {
         assert_eq!(answer1(load(DATA)), 488)

@@ -120,6 +120,7 @@ mod tests {
             195
         )
     }
+
     #[test]
     fn test_answer1() {
         assert_eq!(answer1(load(DATA)), 1601)

@@ -4,7 +4,7 @@ pub const DATA: &str = "input/aoc9";
 
 type Map = Array2<u32>;
 
-fn iter_low_points<'a>(floor: &'a Map) -> impl Iterator<Item = ((usize, usize), &u32)> + 'a {
+fn iter_low_points(floor: &Map) -> impl Iterator<Item = ((usize, usize), &u32)> {
     let (n_row, n_col) = floor.dim();
     floor.indexed_iter().filter(move |&((i_row, i_col), &pos)| {
         iter_neighbours(i_row, i_col, n_row - 1, n_col - 1).all(|idx| floor[idx] > pos)
@@ -93,6 +93,7 @@ mod tests {
     fn test_answer2_mock_data() {
         assert_eq!(answer2(&arr2(&MOCK_DATA)), 1134)
     }
+
     #[test]
     fn test_answer1() {
         assert_eq!(answer1(&load(DATA)), 554)

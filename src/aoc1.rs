@@ -25,6 +25,7 @@ mod tests {
     fn test_answer2_mock_data() {
         assert_eq!(answer2(MOCK_DATA), 5)
     }
+
     #[test]
     fn test_answer1() {
         assert_eq!(answer1(&load(DATA)), 1624)
