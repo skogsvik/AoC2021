@@ -1,5 +1,5 @@
-pub use crate::loaders::file_to_lines;
-use std::{fs::read_to_string, iter::repeat_with, path::Path};
+pub use crate::loaders::file_to_squashed_2d_vec as load;
+use std::iter::repeat_with;
 
 use itertools::{iproduct, Itertools};
 
@@ -8,19 +8,7 @@ pub const DATA: &str = "input/aoc11";
 type Octopuses = Vec<u32>; // Vector of each octopus count
 type Neighbours = Vec<Vec<usize>>; // Vector of vectors, listing each octopus neighbor
 
-pub fn load(filename: impl AsRef<Path>) -> (Octopuses, Neighbours) {
-    bake_neighbour_lookup(3, 3);
-    let data = read_to_string(filename).expect("Failed to open file");
-    let width = data
-        .chars()
-        .position(|c| c == '\n')
-        .unwrap_or_else(|| data.len() - 1);
-    let octopuses = data.chars().filter_map(|c| c.to_digit(10)).collect_vec();
-    let neighbours = bake_neighbour_lookup(octopuses.len() / width, width);
-    (octopuses, neighbours)
-}
-
-/* Lookup table for neighbours, saves time at the cost of memory */
+/// Lookup table for neighbours, saves time at the cost of memory
 fn bake_neighbour_lookup(n_rows: usize, n_cols: usize) -> Neighbours {
     let row_ranges = (0..n_rows).map(|row| row.saturating_sub(1)..n_rows.min(row + 2));
     let column_ranges = (0..n_cols).map(|col| col.saturating_sub(1)..n_cols.min(col + 2));
@@ -70,15 +58,15 @@ fn flash(octopuses: &mut Octopuses, neighbours: &Neighbours) -> u32 {
     total_flashed
 }
 
-pub fn answer1(input: (Octopuses, Neighbours)) -> u32 {
-    let (mut octopuses, neighbours) = input;
+pub fn answer1((mut octopuses, width): (Octopuses, usize)) -> u32 {
+    let neighbours = bake_neighbour_lookup(octopuses.len() / width, width);
     repeat_with(|| flash(&mut octopuses, &neighbours))
         .take(100)
         .sum()
 }
 
-pub fn answer2(input: (Octopuses, Neighbours)) -> u32 {
-    let (mut octopuses, neighbours) = input;
+pub fn answer2((mut octopuses, width): (Octopuses, usize)) -> u32 {
+    let neighbours = bake_neighbour_lookup(octopuses.len() / width, width);
     let mut iterations = 0;
     while !octopuses.iter().all_equal() {
         iterations += 1;
@@ -91,8 +79,9 @@ pub fn answer2(input: (Octopuses, Neighbours)) -> u32 {
 mod tests {
     use super::*;
 
+    const MOCK_WIDTH: usize = 10;
     #[rustfmt::skip]
-    const MOCK_DATA: [u32; 10*10] = [
+    const MOCK_DATA: [u32; MOCK_WIDTH*MOCK_WIDTH] = [
         5, 4, 8, 3, 1, 4, 3, 2, 2, 3,
         2, 7, 4, 5, 8, 5, 4, 7, 1, 1,
         5, 2, 6, 4, 5, 5, 6, 1, 7, 3,
@@ -107,18 +96,12 @@ mod tests {
 
     #[test]
     fn test_answer1_mock_data() {
-        assert_eq!(
-            answer1((MOCK_DATA.to_vec(), bake_neighbour_lookup(10, 10))),
-            1656
-        )
+        assert_eq!(answer1((MOCK_DATA.to_vec(), MOCK_WIDTH)), 1656)
     }
 
     #[test]
     fn test_answer2_mock_data() {
-        assert_eq!(
-            answer2((MOCK_DATA.to_vec(), bake_neighbour_lookup(10, 10))),
-            195
-        )
+        assert_eq!(answer2((MOCK_DATA.to_vec(), MOCK_WIDTH)), 195)
     }
 
     #[test]

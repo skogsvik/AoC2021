@@ -31,13 +31,18 @@ where
     file_to(filename).collect()
 }
 
-pub fn file_to_array2(filename: impl AsRef<Path>) -> Array2<u32> {
+pub fn file_to_squashed_2d_vec(filename: impl AsRef<Path>) -> (Vec<u32>, usize) {
     let data = read_to_string(filename).expect("Failed to open file");
     let width = data
         .chars()
         .position(|c| c == '\n')
-        .unwrap_or_else(|| data.len() - 1);
-    let data: Vec<u32> = data.chars().filter_map(|c| c.to_digit(10)).collect();
+        .unwrap_or(data.len() - 1);
+    let array = data.chars().filter_map(|c| c.to_digit(10)).collect();
+    (array, width)
+}
+
+pub fn file_to_array2(filename: impl AsRef<Path>) -> Array2<u32> {
+    let (data, width) = file_to_squashed_2d_vec(filename);
     Array2::from_shape_vec((data.len() / width, width), data).expect("Could not build array")
 }
 
