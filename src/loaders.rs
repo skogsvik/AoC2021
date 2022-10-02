@@ -12,6 +12,15 @@ fn buf_open(filename: impl AsRef<Path>) -> BufReader<File> {
     BufReader::new(file)
 }
 
+pub fn file_to_string(filename: impl AsRef<Path>) -> String {
+    let mut content = String::new();
+    File::open(filename)
+        .expect("No such file")
+        .read_to_string(&mut content)
+        .expect("Unablet to read UTF-8 data");
+    content
+}
+
 pub fn file_to<T>(filename: impl AsRef<Path>) -> impl Iterator<Item = T>
 where
     T::Err: Debug,
