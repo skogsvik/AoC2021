@@ -79,7 +79,7 @@ mod tests {
     use super::*;
     use crate::mockers::*;
 
-    const MOCK_DATA: &str = r"00100
+    const MOCK_DATA: &str = "00100
 11110
 10110
 10111

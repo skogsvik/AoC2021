@@ -90,34 +90,38 @@ mod tests {
     use itertools::zip_eq;
 
     const MOCK_DATA: [&str; 2] = [
-        r"dc-end
-HN-start
-start-kj
-dc-start
-dc-HN
-LN-dc
-HN-end
-kj-sa
-kj-HN
-kj-dc",
-        r"fs-end
-he-DX
-fs-he
-start-DX
-pj-DX
-end-zg
-zg-sl
-zg-pj
-pj-he
-RW-he
-fs-DX
-pj-RW
-zg-RW
-start-pj
-he-WI
-zg-he
-pj-fs
-start-RW",
+        concat!(
+            "dc-end\n",
+            "HN-start\n",
+            "start-kj\n",
+            "dc-start\n",
+            "dc-HN\n",
+            "LN-dc\n",
+            "HN-end\n",
+            "kj-sa\n",
+            "kj-HN\n",
+            "kj-dc\n",
+        ),
+        concat!(
+            "fs-end\n",
+            "he-DX\n",
+            "fs-he\n",
+            "start-DX\n",
+            "pj-DX\n",
+            "end-zg\n",
+            "zg-sl\n",
+            "zg-pj\n",
+            "pj-he\n",
+            "RW-he\n",
+            "fs-DX\n",
+            "pj-RW\n",
+            "zg-RW\n",
+            "start-pj\n",
+            "he-WI\n",
+            "zg-he\n",
+            "pj-fs\n",
+            "start-RW\n",
+        ),
     ];
 
     #[test]

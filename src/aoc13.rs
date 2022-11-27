@@ -120,13 +120,13 @@ mod tests {
         Instruction { axis: 1, index: 7 },
         Instruction { axis: 0, index: 5 },
     ];
-    const MOCK_SOLUTION: &str = r"
+    const MOCK_SOLUTION: &str = "
 #####
 #   #
 #   #
 #   #
 #####";
-    const SOLUTION: &str = r"
+    const SOLUTION: &str = "
 #  #  ##  #    #### ###   ##  #### #  #
 #  # #  # #       # #  # #  #    # #  #
 #  # #    #      #  #  # #  #   #  #  #
@@ -136,12 +136,18 @@ mod tests {
 
     #[test]
     fn test_answer1_mock_data() {
-        assert_eq!(answer1((HashSet::from_iter(MOCK_POINTS), MOCK_INSTRUCTIONS.to_vec())), 17)
+        assert_eq!(
+            answer1((HashSet::from_iter(MOCK_POINTS), MOCK_INSTRUCTIONS.to_vec())),
+            17
+        )
     }
-    
+
     #[test]
     fn test_answer2_mock_data() {
-        assert_eq!(answer2((HashSet::from_iter(MOCK_POINTS), MOCK_INSTRUCTIONS.to_vec())), MOCK_SOLUTION)
+        assert_eq!(
+            answer2((HashSet::from_iter(MOCK_POINTS), MOCK_INSTRUCTIONS.to_vec())),
+            MOCK_SOLUTION
+        )
     }
 
     #[test]

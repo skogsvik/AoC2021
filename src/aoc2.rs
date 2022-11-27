@@ -60,12 +60,14 @@ mod tests {
     use super::*;
     use crate::mockers::*;
 
-    const MOCK_DATA: &str = r"forward 5
-down 5
-forward 8
-up 3
-down 8
-forward 2";
+    const MOCK_DATA: &str = concat!(
+        "forward 5\n",
+        "down 5\n",
+        "forward 8\n",
+        "up 3\n",
+        "down 8\n",
+        "forward 2\n",
+    );
 
     #[test]
     fn test_answer1_mock_data() {
